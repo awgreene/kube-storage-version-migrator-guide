@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trigger
+  namespace: kube-system
+  labels:
+    app: trigger
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: trigger
+  template:
+    metadata:
+      labels:
+        app: trigger
+    spec:
+      containers:
+      - name: trigger
+        image: quay.io/agreene/storage-version-migration-trigger:v0.1
+        livenessProbe:
+          httpGet:
+            scheme: HTTP
+            port: 2113
+            path: /healthz
+          initialDelaySeconds: 10
+          timeoutSeconds: 60

@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: migrator
+  namespace: kube-system
+  labels:
+    app: migrator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: migrator
+  template:
+    metadata:
+      labels:
+        app: migrator
+    spec:
+      containers:
+      - name: migrator
+        image: quay.io/agreene/storage-version-migration-migrator:v0.1
+        command:
+          - /migrator
+          - --v=2
+          - --alsologtostderr
+          - --kube-api-qps=40
+          - --kube-api-burst=1000
+        livenessProbe:
+          httpGet:
+            scheme: HTTP
+            port: 2112
+            path: /healthz
+          initialDelaySeconds: 10
+          timeoutSeconds: 60

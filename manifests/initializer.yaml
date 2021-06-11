@@ -1,0 +1,13 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: initializer
+  namespace: kube-system
+spec:
+  template:
+    spec:
+      containers:
+      - name: initializer
+        image: quay.io/agreene/storage-version-migration-initializer:v0.1
+      restartPolicy: Never
+  backoffLimit: 4
